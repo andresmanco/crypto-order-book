@@ -66,7 +66,8 @@ export const PriceChart = ({ pair }) => {
       data={data}
       responsive
       margin={{ top: 5, right: 0, left: 0, bottom: 5 }}
-      style={{ width: "100%", height: "100vh" }}
+      className="h-full"
+      style={{ width: "100%" }}
     >
       <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" />
       <XAxis

@@ -16,12 +16,12 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="dark min-h-screen bg-gray-950 text-gray-50 flex flex-col">
+      <div className="dark h-screen bg-gray-950 text-gray-50 flex flex-col">
         <header className="flex items-center justify-between px-6 bg-gray-900 border-b border-gray-800">
           <h1 className="text-gray-300 font-extrabold uppercase">Crypto Order Book</h1>
           <CryptoDropdown options={PAIRS} onSelect={setCryptoPair} selected={cryptoPair} />
         </header>
-        <main className="flex-1 grid grid-cols-[1fr_360px] min-h-0 max-h-full overflow-hidden">
+        <main className="flex-1 min-h-0 grid grid-cols-[1fr_360px] overflow-hidden">
           <section aria-label="Price chart" className="h-full border-r border-gray-800 overflow-hidden">
             <PriceChart pair={cryptoPair} />
           </section>

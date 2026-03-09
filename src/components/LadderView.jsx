@@ -1,4 +1,4 @@
-import { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "./ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./ui/table";
 
 const invoices = [
   {
@@ -58,7 +58,7 @@ export function LadderView() {
         {invoices.map((invoice) => (
           <TableRow key={invoice.invoice}>
             <TableCell>{invoice.totalAmount}</TableCell>
-            <TableCell className="text-right">{invoice.invoice}</TableCell>
+            <TableCell className="text-right text-ask">{invoice.invoice}</TableCell>
           </TableRow>
         ))}
       </TableBody>
