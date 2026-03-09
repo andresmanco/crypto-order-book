@@ -37,7 +37,7 @@ export const PriceChart = ({ pair }) => {
   const url = `${REST_ENDPOINT}/products/${pair}/candles?granularity=${granularity}&start=${startTime.toISOString()}&end=${endTime.toISOString()}`;
 
   const { data, isPending, error } = useQuery({
-    queryKey: ["priceHistory"],
+    queryKey: ["priceHistory", pair],
     queryFn: async () => {
       const raw = await fetch(url).then((res) => res.json());
       return raw
@@ -67,36 +67,32 @@ export const PriceChart = ({ pair }) => {
       margin={{ top: 5, right: 0, left: 0, bottom: 5 }}
       style={{ width: "100%", maxWidth: "1000px", height: "100%", maxHeight: "100vh", aspectRatio: 1.618 }}
     >
-      <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" vertical={false} />
+      <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" />
       <XAxis
         dataKey="time"
         tickFormatter={formatTimestamp}
         tick={{ fill: "#6b7280", fontSize: 10 }}
+        minTickGap={50}
         axisLine={false}
         tickLine={false}
       />
       <YAxis
         domain={domainRange}
-        tickFormatter={(v) =>
-          v.toLocaleString("en-US", {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0,
-          })
-        }
-        width="60"
+        tickFormatter={(v) => Math.trunc(v).toLocaleString("en-US")}
         tick={{ fill: "#6b7280", fontSize: 10 }}
+        width={60}
         axisLine={false}
         tickLine={false}
       />
-      <Tooltip content={CustomTooltip} cursor={{ stroke: "#374151", strokeWidth: 1 }} />
+      <Tooltip content={CustomTooltip} cursor={{ stroke: "#374151" }} />
       <Line
-        type="monotone"
+        type="step"
         dataKey="price"
         stroke="#6AE160"
         dot={{
-          fill: "red",
+          fill: "#6AE160",
         }}
-        activeDot={{ r: 8, stroke: "#6AE160" }}
+        activeDot={{ r: 5, stroke: "red", fill: "red" }}
       />
     </LineChart>
   );
