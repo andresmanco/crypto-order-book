@@ -64,8 +64,9 @@ export const PriceChart = ({ pair }) => {
   return (
     <LineChart
       data={data}
+      responsive
       margin={{ top: 5, right: 0, left: 0, bottom: 5 }}
-      style={{ width: "100%", maxWidth: "1000px", height: "100%", maxHeight: "100vh", aspectRatio: 1.618 }}
+      style={{ width: "100%", height: "100vh" }}
     >
       <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" />
       <XAxis
@@ -73,6 +74,7 @@ export const PriceChart = ({ pair }) => {
         tickFormatter={formatTimestamp}
         tick={{ fill: "#6b7280", fontSize: 10 }}
         minTickGap={50}
+        interval="preserveStartEnd"
         axisLine={false}
         tickLine={false}
       />
