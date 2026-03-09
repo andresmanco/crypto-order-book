@@ -1,5 +1,5 @@
 module.exports = {
-  purge: ["./src/**/*.{js,jsx}"],
+  content: ["./public/index.html", "./src/**/*.{js,jsx}"],
   darkMode: "class", // or 'media' or 'class'
   theme: {
     extend: {
@@ -8,9 +8,6 @@ module.exports = {
         bid: "#6AE160",
       },
     },
-  },
-  variants: {
-    extend: {},
   },
   plugins: [],
 };
