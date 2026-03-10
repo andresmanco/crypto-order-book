@@ -1,5 +1,5 @@
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./ui/table";
-
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
+import { cn } from "../../lib/utils";
 const invoices = [
   {
     invoice: "INV001",
@@ -45,20 +45,24 @@ const invoices = [
   },
 ];
 
-export function LadderView() {
+export function LadderView({ type }) {
   return (
     <Table className="w-full">
-      <TableHeader>
-        <TableRow>
-          <TableHead className="w-[100px]">Price</TableHead>
-          <TableHead className="text-right">Amount</TableHead>
-        </TableRow>
-      </TableHeader>
+      {type === "offer" && (
+        <TableHeader>
+          <TableRow className="border-0 p-0 m-0 h-auto ">
+            <TableHead className="w-[100px] uppercase text-[10px] text-gray-500">Market Size</TableHead>
+            <TableHead className="text-right uppercase text-[10px] text-gray-500">Price(USD)</TableHead>
+          </TableRow>
+        </TableHeader>
+      )}
       <TableBody>
         {invoices.map((invoice) => (
-          <TableRow key={invoice.invoice}>
+          <TableRow className="border-0" key={invoice.invoice}>
             <TableCell>{invoice.totalAmount}</TableCell>
-            <TableCell className="text-right text-ask">{invoice.invoice}</TableCell>
+            <TableCell className={cn("text-right", type === "bid" ? "text-bid" : "text-offer")}>
+              {invoice.invoice}
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>

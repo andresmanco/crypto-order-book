@@ -3,7 +3,9 @@ import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { MAX_BOOK_ROWS, PAIRS } from "./constants";
 import { PriceChart } from "./components/PriceChart";
 import { CryptoDropdown } from "./components/CryptoDropdown";
-import { LadderView } from "./components/LadderView";
+import { LadderView } from "./components/order-book/LadderView";
+import { SpreadRow } from "./components/order-book/SpreadRow";
+import { TopOfBook } from "./components/order-book/TopOfBook";
 
 // const loadingBids = new Array(MAX_BOOK_ROWS).fill({ "---.--": "--.---" });
 // const loadingAsks = new Array(MAX_BOOK_ROWS).fill({ "---.--": "--.---" });
@@ -26,7 +28,11 @@ function App() {
             <PriceChart pair={cryptoPair} />
           </section>
           <section aria-label="Order book" className="flex flex-col overflow-hidden">
-            <LadderView />
+            <div className="flex items-center justify-between px-6 bg-gray-900 border-b border-gray-800"></div>
+            <TopOfBook bestBid={50500} bestOffer={51000} isConnected={true} />
+            <LadderView type="offer" />
+            <SpreadRow spread={51000 - 50500} />
+            <LadderView type="bid" />
           </section>
         </main>
       </div>
