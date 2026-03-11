@@ -14,7 +14,7 @@ export function CryptoDropdown({ options, selected, onSelect }) {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button className="bg-gray-800 border-gray-400, m-3" variant="outline">
-          {selected}
+          {selected.cId}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="bg-gray-900" align="start">
@@ -24,11 +24,11 @@ export function CryptoDropdown({ options, selected, onSelect }) {
             options.map((option) => {
               return (
                 <DropdownMenuItem
-                  className={cn("cursor-pointer hover:bg-gray-700", selected === option && "bg-gray-300")}
-                  key={option.id}
-                  onSelect={() => onSelect(option.id)}
+                  className={cn("cursor-pointer hover:bg-gray-700", selected.cId === option.cId && "bg-gray-300")}
+                  key={option.cId}
+                  onSelect={() => onSelect(option)}
                 >
-                  {option.id}
+                  {option.cId}
                 </DropdownMenuItem>
               );
             })}
