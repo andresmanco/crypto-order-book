@@ -1,7 +1,6 @@
-export const TopOfBook = ({ bestBid, bestAsk, isConnected }) => {
-  const formatPrice = (amount) =>
-    amount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 3 });
+import { formatPrice } from "../../lib/utils";
 
+export const TopOfBook = ({ bestBid, bestAsk, isConnected }) => {
   return (
     <div
       aria-label="Top of book"

@@ -1,6 +1,6 @@
 import { useRef, useEffect, useReducer } from "react";
 import useWebSocket, { ReadyState } from "react-use-websocket";
-import { WS_ENDPOINT } from "../constants";
+import { WS_ENDPOINT, MAX_BOOK_ROWS } from "../constants";
 
 const initialState = { asks: new Map(), bids: new Map() };
 
@@ -41,6 +41,7 @@ export const useOrderBook = (pair) => {
   const hasPending = useRef(false);
   const rafRef = useRef(null);
   const prevPair = useRef(null);
+  const readyStateRef = useRef(ReadyState.UNINSTANTIATED);
 
   const { sendJsonMessage, readyState } = useWebSocket(WS_ENDPOINT, {
     onOpen: () => {
@@ -52,7 +53,6 @@ export const useOrderBook = (pair) => {
           depth: 25,
         },
       });
-      prevPair.current = pair;
     },
     onMessage: (e) => {
       let msg = JSON.parse(e.data);
@@ -67,7 +67,7 @@ export const useOrderBook = (pair) => {
         for (const { price, qty } of data.bids) {
           bids.set(price, qty);
         }
-        dispatch({ type: "SNAPSHOT", bids, asks });
+        dispatch({ type: "SNAPSHOT", asks, bids });
       } else if (msg.type === "update") {
         for (const { price, qty } of data.asks) {
           pendingAsks.current.set(price, qty);
@@ -101,9 +101,13 @@ export const useOrderBook = (pair) => {
   }, []);
 
   useEffect(() => {
+    readyStateRef.current = readyState;
+  }, [readyState]);
+
+  useEffect(() => {
     if (prevPair.current === pair) return;
 
-    if (readyState === ReadyState.OPEN) {
+    if (readyStateRef.current === ReadyState.OPEN) {
       sendJsonMessage({
         method: "unsubscribe",
         params: { channel: "book", symbol: [pair.kId] },
@@ -111,37 +115,19 @@ export const useOrderBook = (pair) => {
     }
   }, [sendJsonMessage, pair]);
 
-  const bestAsk =
-    state.asks.size > 0
-      ? {
-          price: Math.min(...state.asks.keys()),
-          qty: state.asks.get(Math.min(...state.asks.keys())),
-        }
-      : null;
-  const bestBid =
-    state.bids.size > 0
-      ? {
-          price: Math.max(...state.bids.keys()),
-          qty: state.bids.get(Math.max(...state.bids.keys())),
-        }
-      : null;
-
-  const formatList = (rows) => {
-    // for (const [price, qty] of rows) {
-    //   if (isNaN(price) || isNaN(qty) || qty === 0) continue;
-    // }
-    const sortedList = Array.from(rows, ([price, qty]) => ({ price, qty })).sort((a, b) => b.price - a.price);
-    return sortedList;
+  const formatList = (rows, side) => {
+    const list = Array.from(rows, ([price, qty]) => ({ price, qty })).sort((a, b) => b.price - a.price);
+    return side === "ask" ? list.slice(-MAX_BOOK_ROWS) : list.slice(0, MAX_BOOK_ROWS);
   };
 
-  const sortedAsks = formatList(state.asks);
-  const sortedBids = formatList(state.bids);
+  const sortedAsks = formatList(state.asks, "ask");
+  const sortedBids = formatList(state.bids, "bid");
 
   return {
-    bids: sortedAsks,
-    asks: sortedBids,
-    bestAsk,
-    bestBid,
+    asks: sortedAsks,
+    bids: sortedBids,
+    bestAsk: sortedAsks[sortedAsks.length - 1],
+    bestBid: sortedBids[0],
     isConnected: readyState === ReadyState.OPEN,
   };
 };

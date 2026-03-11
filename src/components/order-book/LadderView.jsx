@@ -1,5 +1,5 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
-import { cn } from "../../lib/utils";
+import { cn, formatPrice } from "../../lib/utils";
 
 export function LadderView({ rows, type }) {
   return (
@@ -14,11 +14,12 @@ export function LadderView({ rows, type }) {
       )}
       <TableBody>
         {rows.map((row, index) => {
-          const rowKey = typeof row.price === "number" ? row.price : index;
+          const rowKey = typeof row.price === "number" ? `${type}-${formatPrice(row.price)}` : index;
+          const price = typeof row.price === "number" ? formatPrice(row.price) : row.price; //---.--
           return (
             <TableRow className="border-0" key={rowKey}>
-              <TableCell>{row.price}</TableCell>
-              <TableCell className={cn("text-right", type === "bid" ? "text-bid" : "text-ask")}>{row.qty}</TableCell>
+              <TableCell>{row.qty}</TableCell>
+              <TableCell className={cn("text-right", type === "bid" ? "text-bid" : "text-ask")}>{price}</TableCell>
             </TableRow>
           );
         })}
