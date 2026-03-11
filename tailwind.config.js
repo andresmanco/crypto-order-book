@@ -4,7 +4,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        offer: "#D24D33",
+        ask: "#D24D33",
         bid: "#6AE160",
       },
     },

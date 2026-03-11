@@ -1,19 +1,14 @@
 import { useState } from "react";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
-import { MAX_BOOK_ROWS, PAIRS } from "./constants";
+import { PAIRS } from "./constants";
 import { PriceChart } from "./components/PriceChart";
 import { CryptoDropdown } from "./components/CryptoDropdown";
-import { LadderView } from "./components/order-book/LadderView";
-import { SpreadRow } from "./components/order-book/SpreadRow";
-import { TopOfBook } from "./components/order-book/TopOfBook";
-
-// const loadingBids = new Array(MAX_BOOK_ROWS).fill({ "---.--": "--.---" });
-// const loadingAsks = new Array(MAX_BOOK_ROWS).fill({ "---.--": "--.---" });
+import { OrderBook } from "./components/order-book/OrderBook";
 
 const queryClient = new QueryClient();
 
 function App() {
-  const [cryptoPair, setCryptoPair] = useState(PAIRS[0].id);
+  const [selectedPair, setSelectedPair] = useState(PAIRS[0]);
   // const [aggregation, setAggregation] = useState(0.01);
 
   return (
@@ -21,18 +16,14 @@ function App() {
       <div className="dark h-screen bg-gray-950 text-gray-50 flex flex-col">
         <header className="flex items-center justify-between px-6 bg-gray-900 border-b border-gray-800">
           <h1 className="text-gray-300 font-extrabold uppercase">Crypto Order Book</h1>
-          <CryptoDropdown options={PAIRS} onSelect={setCryptoPair} selected={cryptoPair} />
+          <CryptoDropdown options={PAIRS} onSelect={setSelectedPair} selected={selectedPair} />
         </header>
         <main className="flex-1 min-h-0 grid grid-cols-[1fr_360px] overflow-hidden">
           <section aria-label="Price chart" className="h-full border-r border-gray-800 overflow-hidden">
-            <PriceChart pair={cryptoPair} />
+            <PriceChart pair={selectedPair} />
           </section>
           <section aria-label="Order book" className="flex flex-col overflow-hidden">
-            <div className="flex items-center justify-between px-6 bg-gray-900 border-b border-gray-800"></div>
-            <TopOfBook bestBid={50500} bestOffer={51000} isConnected={true} />
-            <LadderView type="offer" />
-            <SpreadRow spread={51000 - 50500} />
-            <LadderView type="bid" />
+            <OrderBook pair={selectedPair} />
           </section>
         </main>
       </div>

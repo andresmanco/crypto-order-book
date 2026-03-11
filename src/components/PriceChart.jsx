@@ -34,10 +34,10 @@ const CustomTooltip = ({ active, payload, label }) => {
 export const PriceChart = ({ pair }) => {
   const endTime = new Date();
   const startTime = new Date(endTime.getTime() - granularity * candleNumber * 1000);
-  const url = `${REST_ENDPOINT}/products/${pair}/candles?granularity=${granularity}&start=${startTime.toISOString()}&end=${endTime.toISOString()}`;
+  const url = `${REST_ENDPOINT}/products/${pair.cId}/candles?granularity=${granularity}&start=${startTime.toISOString()}&end=${endTime.toISOString()}`;
 
   const { data, isPending, error } = useQuery({
-    queryKey: ["priceHistory", pair],
+    queryKey: ["priceHistory", pair.cId],
     queryFn: async () => {
       const raw = await fetch(url).then((res) => res.json());
       return raw
