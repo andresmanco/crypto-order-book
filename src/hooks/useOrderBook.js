@@ -33,7 +33,7 @@ const reducer = (state, action) => {
   }
 };
 
-export const useOrderBook = (pair) => {
+export const useOrderBook = (pair, increment) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const pendingAsks = useRef(new Map());
   const pendingBids = useRef(new Map());
@@ -125,7 +125,15 @@ export const useOrderBook = (pair) => {
   }, [sendJsonMessage, pair]);
 
   const formatList = (rows, side) => {
-    const list = Array.from(rows, ([price, qty]) => ({ price, qty })).sort((a, b) => b.price - a.price);
+    const combinedRoundedRows = new Map();
+
+    for (const [price, qty] of rows) {
+      const roundedPrice = Math.round(price / increment) * increment;
+
+      combinedRoundedRows.set(roundedPrice, combinedRoundedRows.get(roundedPrice) || 0 + qty);
+    }
+
+    const list = Array.from(combinedRoundedRows, ([price, qty]) => ({ price, qty })).sort((a, b) => b.price - a.price);
     return side === "ask" ? list.slice(-MAX_BOOK_ROWS) : list.slice(0, MAX_BOOK_ROWS);
   };
 

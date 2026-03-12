@@ -10,7 +10,7 @@ const loadingRows = new Array(MAX_BOOK_ROWS).fill({ price: "---.--", qty: "--.--
 
 export const OrderBook = ({ pair }) => {
   const [selectedIncrement, setSelectedIncrement] = useState(0.01);
-  const { asks, bids, bestAsk, bestBid, isConnected } = useOrderBook(pair);
+  const { asks, bids, bestAsk, bestBid, isConnected } = useOrderBook(pair, selectedIncrement);
 
   return (
     <>
