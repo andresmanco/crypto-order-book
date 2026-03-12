@@ -24,7 +24,7 @@ export function CryptoDropdown({ options, selected, onSelect }) {
             options.map((option) => {
               return (
                 <DropdownMenuItem
-                  className={cn("cursor-pointer hover:bg-gray-700", selected.cId === option.cId && "bg-gray-300")}
+                  className={cn("cursor-pointer hover:bg-gray-700", selected.cId === option.cId && "bg-gray-700")}
                   key={option.cId}
                   onSelect={() => onSelect(option)}
                 >

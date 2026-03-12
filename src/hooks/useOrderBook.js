@@ -27,8 +27,7 @@ const reducer = (state, action) => {
       }
       return { asks, bids };
     case "CLEAR":
-      return { asks: new Map(), bids: new Map() };
-
+      return { asks: action.asks, bids: action.bids };
     default:
       return state;
   }
@@ -40,7 +39,7 @@ export const useOrderBook = (pair) => {
   const pendingBids = useRef(new Map());
   const hasPending = useRef(false);
   const rafRef = useRef(null);
-  const prevPair = useRef(null);
+  const prevPair = useRef(pair.kId);
   const readyStateRef = useRef(ReadyState.UNINSTANTIATED);
 
   const { sendJsonMessage, readyState } = useWebSocket(WS_ENDPOINT, {
@@ -56,7 +55,16 @@ export const useOrderBook = (pair) => {
     },
     onMessage: (e) => {
       let msg = JSON.parse(e.data);
-      if (msg.channel !== "book" || !msg.data) return;
+      if (msg.method === "unsubscribe" && msg.success) {
+        dispatch("CLEAR", new Map(), new Map());
+        pendingAsks.current.clear();
+        pendingBids.current.clear();
+        sendJsonMessage({
+          method: "subscribe",
+          params: { channel: "book", symbol: [pair.kId], depth: 25, snapshot: true },
+        });
+      }
+      if (msg.channel !== "book" || !msg.data || msg.data[0].symbol !== pair.kId) return;
       const data = msg.data[0];
       if (msg.type === "snapshot") {
         const asks = new Map();
@@ -105,13 +113,14 @@ export const useOrderBook = (pair) => {
   }, [readyState]);
 
   useEffect(() => {
-    if (prevPair.current === pair) return;
-
+    if (prevPair.current === pair.kId) return;
     if (readyStateRef.current === ReadyState.OPEN) {
+      hasPending.current = false;
       sendJsonMessage({
         method: "unsubscribe",
-        params: { channel: "book", symbol: [pair.kId] },
+        params: { channel: "book", symbol: [prevPair.current], depth: 25 },
       });
+      prevPair.current = pair.kId;
     }
   }, [sendJsonMessage, pair]);
 
