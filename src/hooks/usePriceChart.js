@@ -1,6 +1,6 @@
 import { useRef, useEffect, useReducer } from "react";
 import useWebSocket, { ReadyState } from "react-use-websocket";
-import { WS_ENDPOINT, MAX_BOOK_ROWS } from "../constants";
+import { WS_ENDPOINT } from "../constants";
 
 const initialState = { asks: new Map(), bids: new Map() };
 
@@ -43,9 +43,9 @@ export const useOrderBook = (pair, increment) => {
       sendJsonMessage({
         method: "subscribe",
         params: {
-          channel: "book",
+          channel: "ohlc",
           symbol: [pair],
-          depth: 25,
+          interval: 5,
         },
       });
     },
@@ -101,27 +101,5 @@ export const useOrderBook = (pair, increment) => {
     }
   }, [sendJsonMessage, pair]);
 
-  const formatList = (rows, side) => {
-    const combinedRoundedRows = new Map();
-
-    for (const [price, qty] of rows) {
-      const roundedPrice = Math.round(price / increment) * increment;
-
-      combinedRoundedRows.set(roundedPrice, combinedRoundedRows.get(roundedPrice) || 0 + qty);
-    }
-
-    const list = Array.from(combinedRoundedRows, ([price, qty]) => ({ price, qty })).sort((a, b) => b.price - a.price);
-    return side === "ask" ? list.slice(-MAX_BOOK_ROWS) : list.slice(0, MAX_BOOK_ROWS);
-  };
-
-  const sortedAsks = formatList(state.asks, "ask");
-  const sortedBids = formatList(state.bids, "bid");
-
-  return {
-    asks: sortedAsks,
-    bids: sortedBids,
-    bestAsk: sortedAsks[sortedAsks.length - 1],
-    bestBid: sortedBids[0],
-    isConnected: readyState === ReadyState.OPEN,
-  };
+  return {};
 };

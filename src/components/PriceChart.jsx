@@ -5,6 +5,7 @@ import { useMemo } from "react";
 
 const granularity = 60; // 1m candles
 const candleNumber = 60; // number of data points
+const dataPointLength = 1; // 1 min
 
 function formatTimestamp(timestamp, timeframeId) {
   const date = new Date(timestamp);
@@ -34,17 +35,21 @@ const CustomTooltip = ({ active, payload, label }) => {
 export const PriceChart = ({ pair }) => {
   const endTime = new Date();
   const startTime = new Date(endTime.getTime() - granularity * candleNumber * 1000);
-  const url = `${REST_ENDPOINT}/products/${pair.cId}/candles?granularity=${granularity}&start=${startTime.toISOString()}&end=${endTime.toISOString()}`;
+  const since = Math.floor(startTime.getTime() / 1000);
+
+  const url = `${REST_ENDPOINT}?pair=${pair}&interval=${dataPointLength}&since=${since}`;
 
   const { data, isPending, error } = useQuery({
-    queryKey: ["priceHistory", pair.cId],
+    queryKey: ["priceHistory", pair],
     queryFn: async () => {
       const raw = await fetch(url).then((res) => res.json());
-      return raw
-        .map(([timestamp, low, high]) => ({
-          time: timestamp * 1000,
-          price: (high + low) / 2,
-        }))
+      return raw.result[pair]
+        .map(([timestamp, _, high, low]) => {
+          return {
+            time: timestamp * 1000,
+            price: (Number(high) + Number(low)) / 2,
+          };
+        })
         .reverse();
     },
   });
