@@ -35,10 +35,6 @@ const reducer = (state, action) => {
 
 export const useOrderBook = (pair, increment) => {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const pendingAsks = useRef(new Map());
-  const pendingBids = useRef(new Map());
-  const hasPending = useRef(false);
-  const rafRef = useRef(null);
   const prevPair = useRef(pair.kId);
   const readyStateRef = useRef(ReadyState.UNINSTANTIATED);
 
@@ -57,8 +53,6 @@ export const useOrderBook = (pair, increment) => {
       let msg = JSON.parse(e.data);
       if (msg.method === "unsubscribe" && msg.success) {
         dispatch("CLEAR", new Map(), new Map());
-        pendingAsks.current.clear();
-        pendingBids.current.clear();
         sendJsonMessage({
           method: "subscribe",
           params: { channel: "book", symbol: [pair.kId], depth: 25, snapshot: true },
@@ -77,45 +71,28 @@ export const useOrderBook = (pair, increment) => {
         }
         dispatch({ type: "SNAPSHOT", asks, bids });
       } else if (msg.type === "update") {
+        const pendingAsks = new Map();
+        const pendingBids = new Map();
         for (const { price, qty } of data.asks) {
-          pendingAsks.current.set(price, qty);
+          pendingAsks.set(price, qty);
         }
         for (const { price, qty } of data.bids) {
-          pendingBids.current.set(price, qty);
+          pendingBids.set(price, qty);
         }
-        hasPending.current = true;
+        dispatch({
+          type: "FLUSH",
+          asks: new Map(pendingAsks),
+          bids: new Map(pendingBids),
+        });
       }
     },
   });
 
-  useEffect(() => {
-    const flush = () => {
-      if (hasPending.current) {
-        dispatch({
-          type: "FLUSH",
-          asks: new Map(pendingAsks.current),
-          bids: new Map(pendingBids.current),
-        });
-        hasPending.current = false;
-        pendingAsks.current.clear();
-        pendingBids.current.clear();
-      }
-      rafRef.current = requestAnimationFrame(flush);
-    };
-    requestAnimationFrame(flush);
-    return () => {
-      cancelAnimationFrame(rafRef.current);
-    };
-  }, []);
-
-  useEffect(() => {
-    readyStateRef.current = readyState;
-  }, [readyState]);
+  readyStateRef.current = readyState;
 
   useEffect(() => {
     if (prevPair.current === pair.kId) return;
     if (readyStateRef.current === ReadyState.OPEN) {
-      hasPending.current = false;
       sendJsonMessage({
         method: "unsubscribe",
         params: { channel: "book", symbol: [prevPair.current], depth: 25 },
