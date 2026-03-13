@@ -1,6 +1,6 @@
 ## CRYPTO ORDER BOOK
 
-### [Click here to see the Video Review]([LINK_TO_LOOM_VIDEO])
+### [Click here to see the Video Review]([https://www.loom.com/share/174c395c814142b790ad1251570dc8e7])
 
 ## Proposed Solution
 
