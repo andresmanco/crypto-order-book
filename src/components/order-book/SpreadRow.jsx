@@ -7,7 +7,10 @@ export const SpreadRow = memo(function SpreadRow({ spread }) {
       <TableBody className="w-full text-center items-center">
         <TableRow className="border border-gray-700 text-gray-300">
           <TableCell className="p-1">
-            Spread: <span className="px-2 ">{spread ? spread.toLocaleString("en-US") : "--.--"}</span>
+            Spread:{" "}
+            <span className="px-2 ">
+              {typeof spread === "number" && !isNaN(spread) ? spread.toLocaleString("en-US") : "--.--"}
+            </span>
           </TableCell>
         </TableRow>
       </TableBody>

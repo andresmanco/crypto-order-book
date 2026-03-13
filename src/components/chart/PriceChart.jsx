@@ -1,6 +1,7 @@
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
 import { useMemo } from "react";
 import { usePriceChart } from "../../hooks/usePriceChart";
+import { formatPrice } from "../../lib/utils";
 
 function formatTimestamp(timestamp, timeframe) {
   const date = new Date(timestamp);
@@ -12,7 +13,7 @@ function formatTimestamp(timestamp, timeframe) {
 
 const CustomTooltip = ({ active, payload, label }) => {
   const isVisible = active && payload && payload.length;
-  const price = payload[0]?.value.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const price = payload[0]?.value && formatPrice(payload[0]?.value);
   const date = new Date(label).toLocaleString([], {
     month: "short",
     day: "numeric",
