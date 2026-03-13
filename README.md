@@ -1,70 +1,73 @@
-# Getting Started with Create React App
+## CRYPTO ORDER BOOK
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### [Click here to see the Video Review]([LINK_TO_LOOM_VIDEO])
 
-## Available Scripts
+## Proposed Solution
 
-In the project directory, you can run:
+- TanStack Query (REST) for historical OHLC snapshots with WebSockets (v2) for low-latency, real-time updates.
+- Developed custom useReducers to deal with incoming WebSocket data and REST data
+- Created a user-configurable interface using shadcn/ui, allowing users to pick their crypto pairs, switch time intervals (1h, 1d, 1m) and price aggregation (0.01, 0.05, 0.1, 0.25, 0.5, 1).
+- Leveraged Tailwind CSS and Recharts and Shadcn for styling and widgets.
+- Developed some minimal testing.
 
-### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Screenshots
+![alt text](assets/app_screen.png)
+![alt text](assets/lighthouse_score.png)
+![alt text](assets/first_design.png)
+![alt text](assets/unit_tests.png)
+![alt text](assets/cypress_tests.png)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Assumptions
 
-### `npm test`
+*TODO: [ASSUMPTIONS_MADE_HERE]*
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Libraries / Tools Used
 
-### `npm run build`
+- React.js
+- Vite
+- Tailwind
+- Shadcn
+- Recharts
+- TanStack Query
+- React Use WebSocket
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Setup
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+To install the dependencies run:
 
-### `npm run eject`
+`npm install`
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+To run the app in development mode:
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+`npm run dev`
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+To create the optimized production build:
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+`npm run build`
 
-## Learn More
+To preview the production build:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+`npm run preview`
 
-To learn React, check out the [React documentation](https://reactjs.org/).
 
-### Code Splitting
+## Running the tests
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+To run the unit tests using:
 
-### Analyzing the Bundle Size
+`npm test`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+To run cypress end-to-end test:
 
-### Making a Progressive Web App
+npx cypress open
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
 
-### Advanced Configuration
+## Future Work
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+1. Complete test coverage to achieve 90%
+2. Improve styling and responsive design
+3. Add more controlls to the chart
+4. Setting up a CDN
 
-### Deployment
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)

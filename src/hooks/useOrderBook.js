@@ -1,6 +1,7 @@
-import { useRef, useEffect, useReducer } from "react";
-import useWebSocket, { ReadyState } from "react-use-websocket";
+import { useRef, useEffect, useReducer, useMemo } from "react";
+import useWebSocketLib, { ReadyState } from "react-use-websocket";
 import { WS_ENDPOINT, MAX_BOOK_ROWS } from "../constants";
+const useWebSocket = typeof useWebSocketLib === "function" ? useWebSocketLib : useWebSocketLib.default;
 
 const initialState = { asks: new Map(), bids: new Map() };
 
@@ -8,7 +9,7 @@ const reducer = (state, action) => {
   switch (action.type) {
     case "SNAPSHOT":
       return { asks: action.asks, bids: action.bids };
-    case "FLUSH":
+    case "UPDATE":
       const asks = new Map(state.asks);
       const bids = new Map(state.bids);
       for (const [price, qty] of action.asks) {
@@ -35,7 +36,7 @@ const reducer = (state, action) => {
 
 export const useOrderBook = (pair, increment) => {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const prevPair = useRef(pair.kId);
+  const prevPair = useRef(pair);
   const readyStateRef = useRef(ReadyState.UNINSTANTIATED);
 
   const { sendJsonMessage, readyState } = useWebSocket(WS_ENDPOINT, {
@@ -44,7 +45,7 @@ export const useOrderBook = (pair, increment) => {
         method: "subscribe",
         params: {
           channel: "book",
-          symbol: [pair.kId],
+          symbol: [pair],
           depth: 25,
         },
       });
@@ -55,34 +56,26 @@ export const useOrderBook = (pair, increment) => {
         dispatch("CLEAR", new Map(), new Map());
         sendJsonMessage({
           method: "subscribe",
-          params: { channel: "book", symbol: [pair.kId], depth: 25, snapshot: true },
+          params: { channel: "book", symbol: [pair], depth: 25, snapshot: true },
         });
       }
-      if (msg.channel !== "book" || !msg.data || msg.data[0].symbol !== pair.kId) return;
+      if (msg.channel !== "book" || !msg.data || msg.data[0].symbol !== pair) return;
       const data = msg.data[0];
+      const asks = new Map();
+      const bids = new Map();
+      for (const { price, qty } of data.asks) {
+        asks.set(price, qty);
+      }
+      for (const { price, qty } of data.bids) {
+        bids.set(price, qty);
+      }
       if (msg.type === "snapshot") {
-        const asks = new Map();
-        const bids = new Map();
-        for (const { price, qty } of data.asks) {
-          asks.set(price, qty);
-        }
-        for (const { price, qty } of data.bids) {
-          bids.set(price, qty);
-        }
         dispatch({ type: "SNAPSHOT", asks, bids });
       } else if (msg.type === "update") {
-        const pendingAsks = new Map();
-        const pendingBids = new Map();
-        for (const { price, qty } of data.asks) {
-          pendingAsks.set(price, qty);
-        }
-        for (const { price, qty } of data.bids) {
-          pendingBids.set(price, qty);
-        }
         dispatch({
-          type: "FLUSH",
-          asks: new Map(pendingAsks),
-          bids: new Map(pendingBids),
+          type: "UPDATE",
+          asks,
+          bids,
         });
       }
     },
@@ -91,13 +84,13 @@ export const useOrderBook = (pair, increment) => {
   readyStateRef.current = readyState;
 
   useEffect(() => {
-    if (prevPair.current === pair.kId) return;
+    if (prevPair.current === pair) return;
     if (readyStateRef.current === ReadyState.OPEN) {
       sendJsonMessage({
         method: "unsubscribe",
         params: { channel: "book", symbol: [prevPair.current], depth: 25 },
       });
-      prevPair.current = pair.kId;
+      prevPair.current = pair;
     }
   }, [sendJsonMessage, pair]);
 
@@ -114,8 +107,8 @@ export const useOrderBook = (pair, increment) => {
     return side === "ask" ? list.slice(-MAX_BOOK_ROWS) : list.slice(0, MAX_BOOK_ROWS);
   };
 
-  const sortedAsks = formatList(state.asks, "ask");
-  const sortedBids = formatList(state.bids, "bid");
+  const sortedAsks = useMemo(() => formatList(state.asks, "ask"), [state.asks, increment]);
+  const sortedBids = useMemo(() => formatList(state.bids, "bid"), [state.bids, increment]);
 
   return {
     asks: sortedAsks,

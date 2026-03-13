@@ -1,15 +1,16 @@
+import { memo } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { cn, formatPrice } from "../../lib/utils";
 import { MAX_BOOK_ROWS } from "../../constants";
 
-export function LadderView({ rows, type }) {
+export const LadderView = memo(function LadderView({ rows, type }) {
   return (
     <Table className="w-full">
       {type === "ask" && (
         <TableHeader>
           <TableRow className="border-0 p-0 m-0 h-auto ">
-            <TableHead className="w-[100px] uppercase text-[10px] text-gray-500">Market Size</TableHead>
-            <TableHead className="text-right uppercase text-[10px] text-gray-500">Price(USD)</TableHead>
+            <TableHead className="w-[100px] uppercase text-[10px] text-gray-300">Market Size</TableHead>
+            <TableHead className="text-right uppercase text-[10px] text-gray-300">Price(USD)</TableHead>
           </TableRow>
         </TableHeader>
       )}
@@ -36,4 +37,4 @@ export function LadderView({ rows, type }) {
       </TableBody>
     </Table>
   );
-}
+});

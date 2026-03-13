@@ -1,19 +1,19 @@
-import { useQuery } from "@tanstack/react-query";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
-import { REST_ENDPOINT } from "../constants";
 import { useMemo } from "react";
+import { usePriceChart } from "../../hooks/usePriceChart";
+import { formatPrice } from "../../lib/utils";
 
-const granularity = 60; // 1m candles
-const candleNumber = 60; // number of data points
-
-function formatTimestamp(timestamp, timeframeId) {
+function formatTimestamp(timestamp, timeframe) {
   const date = new Date(timestamp);
+  if (timeframe === "1m") {
+    return date.toLocaleDateString([], { month: "short", day: "numeric" });
+  }
   return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 }
 
 const CustomTooltip = ({ active, payload, label }) => {
   const isVisible = active && payload && payload.length;
-  const price = payload[0]?.value.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const price = payload[0]?.value && formatPrice(payload[0]?.value);
   const date = new Date(label).toLocaleString([], {
     month: "short",
     day: "numeric",
@@ -26,28 +26,13 @@ const CustomTooltip = ({ active, payload, label }) => {
       style={{ visibility: isVisible ? "visible" : "hidden" }}
     >
       <div className="text-bid">${price}</div>
-      <div className="text-gray-400">{date}</div>
+      <div className="text-gray-300">{date}</div>
     </div>
   );
 };
 
-export const PriceChart = ({ pair }) => {
-  const endTime = new Date();
-  const startTime = new Date(endTime.getTime() - granularity * candleNumber * 1000);
-  const url = `${REST_ENDPOINT}/products/${pair.cId}/candles?granularity=${granularity}&start=${startTime.toISOString()}&end=${endTime.toISOString()}`;
-
-  const { data, isPending, error } = useQuery({
-    queryKey: ["priceHistory", pair.cId],
-    queryFn: async () => {
-      const raw = await fetch(url).then((res) => res.json());
-      return raw
-        .map(([timestamp, low, high]) => ({
-          time: timestamp * 1000,
-          price: (high + low) / 2,
-        }))
-        .reverse();
-    },
-  });
+export const PriceChart = ({ pair, timeframe }) => {
+  const { data, isPending, error } = usePriceChart(pair, timeframe);
 
   const domainRange = useMemo(() => {
     if (!data?.length) return ["auto", "auto"];
@@ -72,7 +57,7 @@ export const PriceChart = ({ pair }) => {
       <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" />
       <XAxis
         dataKey="time"
-        tickFormatter={formatTimestamp}
+        tickFormatter={(ts) => formatTimestamp(ts, timeframe)}
         tick={{ fill: "#6b7280", fontSize: 10 }}
         minTickGap={50}
         interval="preserveStartEnd"
