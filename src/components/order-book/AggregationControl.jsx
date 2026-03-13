@@ -20,7 +20,7 @@ export function AggregationControl({ increment, handleChange }) {
   return (
     <Table>
       <TableBody className="w-full text-center items-center">
-        <TableRow className="border border-gray-700 text-gray-500">
+        <TableRow className="border border-gray-700 text-gray-300">
           <TableCell className="p-1">
             <div className="flex flex-row items-center w-full">
               <div className="flex-1 flex justify-start">
@@ -29,7 +29,7 @@ export function AggregationControl({ increment, handleChange }) {
                   onClick={handleDecrease}
                   className=" bg-gray-800 border-gray-400, m-1 text-gray-300 hover:bg-gray-600"
                   variant="outline"
-                  aria-label='Decrease aggregation'
+                  aria-label="Decrease aggregation"
                 >
                   -
                 </Button>
@@ -43,7 +43,7 @@ export function AggregationControl({ increment, handleChange }) {
                   onClick={handleIncrease}
                   className=" bg-gray-800 border-gray-400 m-1 text-gray-300 hover:bg-gray-600 "
                   variant="outline"
-                  aria-label='Increase aggregation'
+                  aria-label="Increase aggregation"
                 >
                   +
                 </Button>

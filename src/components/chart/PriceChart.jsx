@@ -25,7 +25,7 @@ const CustomTooltip = ({ active, payload, label }) => {
       style={{ visibility: isVisible ? "visible" : "hidden" }}
     >
       <div className="text-bid">${price}</div>
-      <div className="text-gray-400">{date}</div>
+      <div className="text-gray-300">{date}</div>
     </div>
   );
 };
