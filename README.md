@@ -1,7 +1,5 @@
 ## CRYPTO ORDER BOOK
 
-### [Click here to see the Video Review]([https://www.loom.com/share/174c395c814142b790ad1251570dc8e7])
-
 ## Proposed Solution
 
 - TanStack Query (REST) for historical OHLC snapshots with WebSockets (v2) for low-latency, real-time updates.
