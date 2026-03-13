@@ -8,7 +8,7 @@ const reducer = (state, action) => {
   switch (action.type) {
     case "SNAPSHOT":
       return { asks: action.asks, bids: action.bids };
-    case "FLUSH":
+    case "UPDATE":
       const asks = new Map(state.asks);
       const bids = new Map(state.bids);
       for (const [price, qty] of action.asks) {
@@ -60,29 +60,21 @@ export const useOrderBook = (pair, increment) => {
       }
       if (msg.channel !== "book" || !msg.data || msg.data[0].symbol !== pair) return;
       const data = msg.data[0];
+      const asks = new Map();
+      const bids = new Map();
+      for (const { price, qty } of data.asks) {
+        asks.set(price, qty);
+      }
+      for (const { price, qty } of data.bids) {
+        bids.set(price, qty);
+      }
       if (msg.type === "snapshot") {
-        const asks = new Map();
-        const bids = new Map();
-        for (const { price, qty } of data.asks) {
-          asks.set(price, qty);
-        }
-        for (const { price, qty } of data.bids) {
-          bids.set(price, qty);
-        }
         dispatch({ type: "SNAPSHOT", asks, bids });
       } else if (msg.type === "update") {
-        const pendingAsks = new Map();
-        const pendingBids = new Map();
-        for (const { price, qty } of data.asks) {
-          pendingAsks.set(price, qty);
-        }
-        for (const { price, qty } of data.bids) {
-          pendingBids.set(price, qty);
-        }
         dispatch({
-          type: "FLUSH",
-          asks: new Map(pendingAsks),
-          bids: new Map(pendingBids),
+          type: "UPDATE",
+          asks,
+          bids,
         });
       }
     },
