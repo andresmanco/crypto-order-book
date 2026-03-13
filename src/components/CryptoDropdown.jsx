@@ -13,7 +13,11 @@ export function CryptoDropdown({ options, selected, onSelect }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button className="bg-gray-800 border-gray-400, m-3" variant="outline">
+        <Button
+          aria-label={`Dropdown ${selected} selected`}
+          className="bg-gray-800 border-gray-400, m-3"
+          variant="outline"
+        >
           {selected}
         </Button>
       </DropdownMenuTrigger>
@@ -27,6 +31,7 @@ export function CryptoDropdown({ options, selected, onSelect }) {
                   className={cn("cursor-pointer hover:bg-gray-700", selected === option && "bg-gray-700")}
                   key={option}
                   onSelect={() => onSelect(option)}
+                  aria-label={`Dropdown item: ${option}`}
                 >
                   {option}
                 </DropdownMenuItem>

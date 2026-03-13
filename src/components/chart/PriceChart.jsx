@@ -1,8 +1,8 @@
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
 import { useMemo } from "react";
-import { usePriceChart } from "../hooks/usePriceChart";
+import { usePriceChart } from "../../hooks/usePriceChart";
 
-function formatTimestamp(timestamp, timeframeId) {
+function formatTimestamp(timestamp) {
   const date = new Date(timestamp);
   return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 }

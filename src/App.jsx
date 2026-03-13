@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { PAIRS } from "./constants";
-import { PriceChart } from "./components/PriceChart";
+import { PriceChart } from "./components/chart/PriceChart";
+import { IntervalControll } from "./components/chart/IntervalControll";
 import { CryptoDropdown } from "./components/CryptoDropdown";
 import { OrderBook } from "./components/order-book/OrderBook";
 
@@ -19,7 +20,8 @@ function App() {
           <CryptoDropdown options={PAIRS} onSelect={setSelectedPair} selected={selectedPair} />
         </header>
         <main className="flex-1 min-h-0 grid grid-cols-[1fr_360px] overflow-hidden">
-          <section aria-label="Price chart" className="h-full border-r border-gray-800 overflow-hidden">
+          <section aria-label="Price chart" className="relative h-full border-r border-gray-800 overflow-hidden">
+            <IntervalControll />
             <PriceChart pair={selectedPair} />
           </section>
           <section aria-label="Order book" className="flex flex-col overflow-hidden">

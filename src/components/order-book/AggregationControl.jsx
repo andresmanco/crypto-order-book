@@ -29,6 +29,7 @@ export function AggregationControl({ increment, handleChange }) {
                   onClick={handleDecrease}
                   className=" bg-gray-800 border-gray-400, m-1 text-gray-300 hover:bg-gray-600"
                   variant="outline"
+                  aria-label='Decrease aggregation'
                 >
                   -
                 </Button>
@@ -42,6 +43,7 @@ export function AggregationControl({ increment, handleChange }) {
                   onClick={handleIncrease}
                   className=" bg-gray-800 border-gray-400 m-1 text-gray-300 hover:bg-gray-600 "
                   variant="outline"
+                  aria-label='Increase aggregation'
                 >
                   +
                 </Button>
