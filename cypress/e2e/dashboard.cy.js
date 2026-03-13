@@ -30,7 +30,7 @@ describe("Dashboard interactions", () => {
   });
 
   it("changes the selected crypto pair via the dropdown", () => {
-    cy.get("[aria-label^='Dropdown BTC/USD']").click();
+    cy.get("[aria-label^='Dropdown BTC/USD selected']").click();
     cy.get("[aria-label='Dropdown item: ETH/USD']").click();
     cy.get("[aria-label^='Dropdown ETH/USD']").should("exist");
   });
