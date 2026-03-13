@@ -1,6 +1,7 @@
 import { useRef, useEffect, useReducer, useMemo } from "react";
-import useWebSocket, { ReadyState } from "react-use-websocket";
+import useWebSocketLib, { ReadyState } from "react-use-websocket";
 import { WS_ENDPOINT, MAX_BOOK_ROWS } from "../constants";
+const useWebSocket = typeof useWebSocketLib === "function" ? useWebSocketLib : useWebSocketLib.default;
 
 const initialState = { asks: new Map(), bids: new Map() };
 

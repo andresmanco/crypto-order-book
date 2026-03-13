@@ -2,8 +2,8 @@
   "name": "crypto-order-book",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "dependencies": {
-    "@craco/craco": "^7.1.0",
     "@radix-ui/react-dropdown-menu": "^2.1.16",
     "@radix-ui/react-slot": "^1.2.4",
     "@tanstack/react-query": "^5.90.21",
@@ -16,7 +16,6 @@
     "lucide-react": "^0.577.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
-    "react-scripts": "5.0.1",
     "react-use-websocket": "^3.0.0",
     "recharts": "^3.8.0",
     "shadcn": "^4.0.2",
@@ -25,10 +24,10 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "craco start",
-    "build": "craco build",
-    "test": "craco test",
-    "eject": "react-scripts eject"
+    "start": "vite",
+    "build": "vite build",
+    "test": "vitest",
+    "preview": "vite preview"
   },
   "eslintConfig": {
     "extends": [
@@ -49,8 +48,12 @@
     ]
   },
   "devDependencies": {
+    "@vitejs/plugin-react": "^6.0.1",
     "autoprefixer": "^10.4.20",
+    "jsdom": "^28.1.0",
     "postcss": "^8.4.49",
-    "tailwindcss": "^3.4.17"
+    "tailwindcss": "^3.4.17",
+    "vite": "^8.0.0",
+    "vitest": "^4.1.0"
   }
 }

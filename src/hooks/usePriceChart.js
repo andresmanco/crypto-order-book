@@ -1,7 +1,8 @@
 import { useRef, useEffect, useReducer, useMemo } from "react";
-import useWebSocket, { ReadyState } from "react-use-websocket";
+import useWebSocketLib, { ReadyState } from "react-use-websocket";
 import { WS_ENDPOINT, REST_ENDPOINT, INTERVALS } from "../constants";
 import { useQuery } from "@tanstack/react-query";
+const useWebSocket = typeof useWebSocketLib === "function" ? useWebSocketLib : useWebSocketLib.default;
 
 const initialState = { dataPoints: [] };
 
