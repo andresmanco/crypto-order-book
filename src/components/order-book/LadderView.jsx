@@ -1,8 +1,9 @@
+import { memo } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { cn, formatPrice } from "../../lib/utils";
 import { MAX_BOOK_ROWS } from "../../constants";
 
-export function LadderView({ rows, type }) {
+export const LadderView = memo(function LadderView({ rows, type }) {
   return (
     <Table className="w-full">
       {type === "ask" && (
@@ -36,4 +37,4 @@ export function LadderView({ rows, type }) {
       </TableBody>
     </Table>
   );
-}
+});

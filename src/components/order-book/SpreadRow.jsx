@@ -1,6 +1,7 @@
+import { memo } from "react";
 import { Table, TableBody, TableCell, TableRow } from "../ui/table";
 
-export function SpreadRow({ spread }) {
+export const SpreadRow = memo(function SpreadRow({ spread }) {
   return (
     <Table>
       <TableBody className="w-full text-center items-center">
@@ -12,4 +13,4 @@ export function SpreadRow({ spread }) {
       </TableBody>
     </Table>
   );
-}
+});

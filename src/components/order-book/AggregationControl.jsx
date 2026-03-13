@@ -1,21 +1,22 @@
-import * as React from "react";
+import { memo, useCallback } from "react";
 import { Button } from "../ui/button";
 import { Table, TableBody, TableCell, TableRow } from "../ui/table";
 import { INCREMENTS } from "../../constants";
-export function AggregationControl({ increment, handleChange }) {
+
+export const AggregationControl = memo(function AggregationControl({ increment, handleChange }) {
   const currentIndex = INCREMENTS.indexOf(increment);
 
-  const handleDecrease = () => {
+  const handleDecrease = useCallback(() => {
     if (currentIndex > 0) {
       handleChange(INCREMENTS[currentIndex - 1]);
     }
-  };
+  }, [currentIndex, handleChange]);
 
-  const handleIncrease = () => {
+  const handleIncrease = useCallback(() => {
     if (currentIndex < INCREMENTS.length - 1) {
       handleChange(INCREMENTS[currentIndex + 1]);
     }
-  };
+  }, [currentIndex, handleChange]);
 
   return (
     <Table>
@@ -54,4 +55,4 @@ export function AggregationControl({ increment, handleChange }) {
       </TableBody>
     </Table>
   );
-}
+});

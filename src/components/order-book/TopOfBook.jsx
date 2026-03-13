@@ -1,6 +1,7 @@
+import { memo } from "react";
 import { formatPrice } from "../../lib/utils";
 
-export const TopOfBook = ({ bestBid, bestAsk, isConnected }) => {
+export const TopOfBook = memo(function TopOfBook({ bestBid, bestAsk, isConnected }) {
   return (
     <div
       aria-label="Top of book"
@@ -24,4 +25,4 @@ export const TopOfBook = ({ bestBid, bestAsk, isConnected }) => {
       </div>
     </div>
   );
-};
+});

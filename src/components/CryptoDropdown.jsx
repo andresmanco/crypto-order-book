@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { cn } from "../lib/utils";
 import { Button } from "./ui/button";
 import {
@@ -9,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 
-export function CryptoDropdown({ options, selected, onSelect }) {
+export const CryptoDropdown = memo(function CryptoDropdown({ options, selected, onSelect }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -41,4 +42,4 @@ export function CryptoDropdown({ options, selected, onSelect }) {
       </DropdownMenuContent>
     </DropdownMenu>
   );
-}
+});

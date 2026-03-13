@@ -1,4 +1,4 @@
-import { useRef, useEffect, useReducer } from "react";
+import { useRef, useEffect, useReducer, useMemo } from "react";
 import useWebSocket, { ReadyState } from "react-use-websocket";
 import { WS_ENDPOINT, MAX_BOOK_ROWS } from "../constants";
 
@@ -106,8 +106,8 @@ export const useOrderBook = (pair, increment) => {
     return side === "ask" ? list.slice(-MAX_BOOK_ROWS) : list.slice(0, MAX_BOOK_ROWS);
   };
 
-  const sortedAsks = formatList(state.asks, "ask");
-  const sortedBids = formatList(state.bids, "bid");
+  const sortedAsks = useMemo(() => formatList(state.asks, "ask"), [state.asks, increment]);
+  const sortedBids = useMemo(() => formatList(state.bids, "bid"), [state.bids, increment]);
 
   return {
     asks: sortedAsks,

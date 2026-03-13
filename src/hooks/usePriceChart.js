@@ -1,4 +1,4 @@
-import { useRef, useEffect, useReducer } from "react";
+import { useRef, useEffect, useReducer, useMemo } from "react";
 import useWebSocket, { ReadyState } from "react-use-websocket";
 import { WS_ENDPOINT, REST_ENDPOINT, INTERVALS } from "../constants";
 import { useQuery } from "@tanstack/react-query";
@@ -130,8 +130,9 @@ export const usePriceChart = (pair, timeframe) => {
     }
   }, [sendJsonMessage, pair, timeframe]);
 
-  const formatedData = Array.from(state.dataPoints, ([time, price]) => ({ time, price })).sort(
-    (a, b) => a.time - b.time,
+  const formatedData = useMemo(
+    () => Array.from(state.dataPoints, ([time, price]) => ({ time, price })).sort((a, b) => a.time - b.time),
+    [state.dataPoints],
   );
   return { data: formatedData, isPending, error };
 };

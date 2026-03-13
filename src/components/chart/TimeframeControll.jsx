@@ -1,8 +1,8 @@
-import * as React from "react";
+import { memo } from "react";
 import { Button } from "../ui/button";
 import { cn } from "../../lib/utils";
 
-export function TimeframeControll({ timeframe, handleChange }) {
+export const TimeframeControll = memo(function TimeframeControll({ timeframe, handleChange }) {
   return (
     <div className="absolute top-3 left-3 z-10 bg-muted/50 p-1 rounded-lg">
       <Button
@@ -31,4 +31,4 @@ export function TimeframeControll({ timeframe, handleChange }) {
       </Button>
     </div>
   );
-}
+});
