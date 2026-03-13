@@ -2,8 +2,11 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts"
 import { useMemo } from "react";
 import { usePriceChart } from "../../hooks/usePriceChart";
 
-function formatTimestamp(timestamp) {
+function formatTimestamp(timestamp, timeframe) {
   const date = new Date(timestamp);
+  if (timeframe === "1m") {
+    return date.toLocaleDateString([], { month: "short", day: "numeric" });
+  }
   return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 }
 
@@ -27,8 +30,8 @@ const CustomTooltip = ({ active, payload, label }) => {
   );
 };
 
-export const PriceChart = ({ pair }) => {
-  const { data, isPending, error } = usePriceChart(pair);
+export const PriceChart = ({ pair, timeframe }) => {
+  const { data, isPending, error } = usePriceChart(pair, timeframe);
 
   const domainRange = useMemo(() => {
     if (!data?.length) return ["auto", "auto"];
@@ -53,7 +56,7 @@ export const PriceChart = ({ pair }) => {
       <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" />
       <XAxis
         dataKey="time"
-        tickFormatter={formatTimestamp}
+        tickFormatter={(ts) => formatTimestamp(ts, timeframe)}
         tick={{ fill: "#6b7280", fontSize: 10 }}
         minTickGap={50}
         interval="preserveStartEnd"

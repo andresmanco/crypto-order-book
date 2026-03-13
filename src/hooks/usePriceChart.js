@@ -1,11 +1,7 @@
 import { useRef, useEffect, useReducer } from "react";
 import useWebSocket, { ReadyState } from "react-use-websocket";
-import { WS_ENDPOINT, REST_ENDPOINT } from "../constants";
+import { WS_ENDPOINT, REST_ENDPOINT, INTERVALS } from "../constants";
 import { useQuery } from "@tanstack/react-query";
-
-const granularity = 60;
-const candleNumber = 60;
-const dataPointLength = 1;
 
 const initialState = { dataPoints: [] };
 
@@ -26,25 +22,41 @@ const reducer = (state, action) => {
   }
 };
 
-export const usePriceChart = (pair, increment) => {
+function getSince(timeframe) {
+  const now = new Date();
+  switch (timeframe) {
+    case "1h":
+      now.setHours(now.getHours() - 1);
+      break;
+    case "1d":
+      now.setDate(now.getDate() - 1);
+      break;
+    case "1m":
+      now.setMonth(now.getMonth() - 1);
+      break;
+    default:
+      throw new Error("Invalid period. Use '1h', '1d', '1m'");
+  }
+  return Math.floor(now.getTime() / 1000);
+}
+
+export const usePriceChart = (pair, timeframe) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const prevPair = useRef(pair);
+  const prevTimeframe = useRef(timeframe);
   const readyStateRef = useRef(ReadyState.UNINSTANTIATED);
 
-  const endTime = new Date();
-  const startTime = new Date(endTime.getTime() - granularity * candleNumber * 1000);
-  const since = Math.floor(startTime.getTime() / 1000);
+  const since = getSince(timeframe);
 
-  const url = `${REST_ENDPOINT}?pair=${pair}&interval=${dataPointLength}&since=${since}`;
+  const url = `${REST_ENDPOINT}?pair=${pair}&interval=${INTERVALS[timeframe]}&since=${since}`;
 
   const { data, isSuccess, isPending, error } = useQuery({
-    queryKey: ["priceHistory", pair],
+    queryKey: ["priceHistory", pair, timeframe],
     queryFn: async () => {
       const raw = await fetch(url).then((res) => res.json());
       return raw.result[pair]
         .map(([timestamp, _, high, low]) => {
           return {
-            // time: timestamp,
             time: timestamp * 1000,
             price: (Number(high) + Number(low)) / 2,
           };
@@ -55,7 +67,6 @@ export const usePriceChart = (pair, increment) => {
 
   useEffect(() => {
     if (isSuccess && data) {
-      // const mapData = new Map(data);
       const mapData = new Map(data.map((d) => [d.time, d.price]));
       dispatch({ type: "REST_DATA", dataPoints: mapData });
     }
@@ -68,7 +79,7 @@ export const usePriceChart = (pair, increment) => {
         params: {
           channel: "ohlc",
           symbol: [pair],
-          interval: dataPointLength,
+          interval: INTERVALS[timeframe],
         },
       });
     },
@@ -81,7 +92,7 @@ export const usePriceChart = (pair, increment) => {
           params: {
             channel: "ohlc",
             symbol: [pair],
-            interval: dataPointLength,
+            interval: INTERVALS[timeframe],
           },
         });
       }
@@ -103,19 +114,21 @@ export const usePriceChart = (pair, increment) => {
   readyStateRef.current = readyState;
 
   useEffect(() => {
-    if (prevPair.current === pair) return;
+    if (prevPair.current === pair && prevTimeframe.current === timeframe) return;
+
     if (readyStateRef.current === ReadyState.OPEN) {
       sendJsonMessage({
         method: "unsubscribe",
         params: {
           channel: "ohlc",
           symbol: [prevPair.current],
-          interval: dataPointLength,
+          interval: INTERVALS[prevTimeframe.current],
         },
       });
       prevPair.current = pair;
+      prevTimeframe.current = timeframe;
     }
-  }, [sendJsonMessage, pair]);
+  }, [sendJsonMessage, pair, timeframe]);
 
   const formatedData = Array.from(state.dataPoints, ([time, price]) => ({ time, price })).sort(
     (a, b) => a.time - b.time,

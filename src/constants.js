@@ -10,4 +10,8 @@ export const PAIRS = ["BTC/USD", "ETH/USD", "LTC/USD", "BCH/USD"];
 
 export const INCREMENTS = [0.01, 0.05, 0.1, 0.25, 0.5, 1.0];
 
-export const INTERVALS = [1, 5, 15, 30, 60, 240, 1440, 10080, 21600];
+export const INTERVALS = {
+  "1h": 1, // 60 candles
+  "1d": 30, // 48 candles
+  "1m": 1440, // 30 candles
+};

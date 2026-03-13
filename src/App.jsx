@@ -2,7 +2,7 @@ import { useState } from "react";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { PAIRS } from "./constants";
 import { PriceChart } from "./components/chart/PriceChart";
-import { IntervalControll } from "./components/chart/IntervalControll";
+import { TimeframeControll } from "./components/chart/TimeframeControll";
 import { CryptoDropdown } from "./components/CryptoDropdown";
 import { OrderBook } from "./components/order-book/OrderBook";
 
@@ -10,7 +10,7 @@ const queryClient = new QueryClient();
 
 function App() {
   const [selectedPair, setSelectedPair] = useState(PAIRS[0]);
-  // const [aggregation, setAggregation] = useState(0.01);
+  const [timeframe, setTimeframe] = useState("1h");
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -21,8 +21,8 @@ function App() {
         </header>
         <main className="flex-1 min-h-0 grid grid-cols-[1fr_360px] overflow-hidden">
           <section aria-label="Price chart" className="relative h-full border-r border-gray-800 overflow-hidden">
-            <IntervalControll />
-            <PriceChart pair={selectedPair} />
+            <TimeframeControll timeframe={timeframe} handleChange={setTimeframe} />
+            <PriceChart pair={selectedPair} timeframe={timeframe} />
           </section>
           <section aria-label="Order book" className="flex flex-col overflow-hidden">
             <OrderBook pair={selectedPair} />
